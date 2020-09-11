@@ -1,0 +1,37 @@
+version: "3.7"
+
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    volumes:
+      - "sql_data:/var/opt/mssql"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "p@ssw0rd"
+    restart: "no"
+
+  nginx:
+    depends_on:
+      - sql
+      - api_1
+    build:
+      context: ./Nginx
+      dockerfile: Nginx.Dockerfile
+    ports:
+      - "4000:80"
+    restart: "no"
+
+  api_1:
+    depends_on:
+      - sql
+    build:
+      context: ./todoCore3.Api
+      dockerfile: Api.Dockerfile
+    expose:
+      - "5000"
+    restart: "no"
+
+volumes:
+  sql_data:
