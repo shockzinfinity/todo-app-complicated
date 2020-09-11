@@ -21,7 +21,7 @@ namespace todoCore3.Api
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddDbContext<TodoContext>(opt => opt.UseSqlServer("Data Source=localhost;Database=todos;Integrated Security=false;User ID=sa;Password=p@ssw0rd"));
+			services.AddDbContext<TodoContext>(opt => opt.UseSqlServer("Data Source=sql;Database=todos;Integrated Security=false;User ID=sa;Password=p@ssw0rd"));
 			services.AddControllers();
 		}
 
@@ -48,7 +48,7 @@ namespace todoCore3.Api
 			{
 				var context = serviceScope.ServiceProvider.GetService<TodoContext>();
 
-				if (context.Database.EnsureCreated() && context.Database.GetPendingMigrations().Any())
+				if (context.Database.GetPendingMigrations().Any())
 				{
 					context.Database.Migrate();
 				}
