@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,7 +21,7 @@ namespace todoCore3.Api
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddDbContext<TodoContext>(opt => opt.UseSqlServer("Data Source=localhost;Database=todos;Integrated Security=false;User ID=sa;Password=y0urStrong!Password;"));
+			services.AddDbContext<TodoContext>(opt => opt.UseSqlServer("Data Source=sql;Database=todos;Integrated Security=false;User ID=sa;Password=p@ssw0rd"));
 			services.AddControllers();
 		}
 
@@ -42,6 +43,13 @@ namespace todoCore3.Api
 			app.UseRouting();
 
 			app.UseAuthorization();
+
+			// DB update migrations
+			if (app.ApplicationServices.GetService<TodoContext>().Database.EnsureCreated() && 
+				app.ApplicationServices.GetService<TodoContext>().Database.GetPendingMigrations().Any())
+			{
+				app.ApplicationServices.GetService<TodoContext>().Database.Migrate();
+			}
 
 			app.UseEndpoints(endpoints =>
 			{
