@@ -16,6 +16,8 @@ services:
     depends_on:
       - sql
       - api_1
+      - api_2
+      - api_3
     build:
       context: ./Nginx
       dockerfile: Nginx.Dockerfile
@@ -44,15 +46,15 @@ services:
       - "5000"
     restart: "no"
 
-    api_3:
-      depends_on:
-        - sql
-      build:
-        context: ./todoCore3.Api
-        dockerfile: Api.Dockerfile
-      expose:
-        - "5000"
-      restart: "no"
+  api_3:
+    depends_on:
+      - sql
+    build:
+      context: ./todoCore3.Api
+      dockerfile: Api.Dockerfile
+    expose:
+      - "5000"
+    restart: "no"
 
-  volumes:
-    sql_data:
+volumes:
+  sql_data:
