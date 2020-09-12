@@ -1,5 +1,5 @@
 FROM nginx:latest
 
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY fullchain.pem /etc/ssl/certs/fullchain.pem
-COPY privkey.pem /etc/ssl/private/privkey.pem
+COPY localhost.crt /etc/ssl/certs/localhost.crt
+COPY localhost.key /etc/ssl/private/localhost.key
