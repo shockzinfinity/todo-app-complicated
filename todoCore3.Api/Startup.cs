@@ -44,15 +44,15 @@ namespace todoCore3.Api
 
 			app.UseAuthorization();
 
-			using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-			{
-				var context = serviceScope.ServiceProvider.GetService<TodoContext>();
+			//using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+			//{
+			//	var context = serviceScope.ServiceProvider.GetService<TodoContext>();
 
-				if (context.Database.GetPendingMigrations().Any())
-				{
-					context.Database.Migrate();
-				}
-			}
+			//	if (context.Database.GetPendingMigrations().Any())
+			//	{
+			//		context.Database.Migrate();
+			//	}
+			//}
 
 			app.UseEndpoints(endpoints =>
 			{
