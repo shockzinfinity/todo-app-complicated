@@ -21,6 +21,7 @@ services:
       dockerfile: Nginx.Dockerfile
     ports:
       - "4000:80"
+      - "4001:443"
     restart: "no"
 
   api_1:
