@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using todoCore3.Api.Models;
 
 namespace todoCore3.Api
@@ -39,6 +40,8 @@ namespace todoCore3.Api
 			{
 				ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
 			});
+
+      app.UseSerilogRequestLogging();
 
 			app.UseRouting();
 
