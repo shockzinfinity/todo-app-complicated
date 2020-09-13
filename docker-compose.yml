@@ -10,7 +10,7 @@ services:
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "p@ssw0rd"
-    restart: "no"
+    restart: "always"
 
   nginx:
     depends_on:
@@ -24,7 +24,7 @@ services:
     ports:
       - "4000:80"
       - "4001:443"
-    restart: "no"
+    restart: "always"
 
   api_1:
     depends_on:
@@ -34,7 +34,7 @@ services:
       dockerfile: Api.Dockerfile
     expose:
       - "5000"
-    restart: "no"
+    restart: "always"
 
   api_2:
     depends_on:
@@ -44,7 +44,7 @@ services:
       dockerfile: Api.Dockerfile
     expose:
       - "5000"
-    restart: "no"
+    restart: "always"
 
   api_3:
     depends_on:
@@ -54,7 +54,7 @@ services:
       dockerfile: Api.Dockerfile
     expose:
       - "5000"
-    restart: "no"
+    restart: "always"
 
 volumes:
   sql_data:
