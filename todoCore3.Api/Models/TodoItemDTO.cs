@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace todoCore3.Api.Models
 {
-  public class TodoItem
+  public class TodoItemDTO
   {
     public long Id { get; set; }
 
@@ -11,9 +11,6 @@ namespace todoCore3.Api.Models
     public string Name { get; set; }
 
     [DefaultValue(false)]
-    public bool IsCompleted { get; set; }
-
-    [Timestamp]
-    public byte[] RowVersion { get; set; }
+    public bool IsComplete { get; set; }
   }
 }
