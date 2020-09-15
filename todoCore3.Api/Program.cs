@@ -9,7 +9,8 @@ using System.IO;
 
 namespace todoCore3.Api
 {
-	public class Program
+#pragma warning disable CS1591
+  public class Program
 	{
     public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
       .SetBasePath(Directory.GetCurrentDirectory())
@@ -38,4 +39,5 @@ namespace todoCore3.Api
 					webBuilder.UseStartup<Startup>();
 				});
 	}
+#pragma warning restore CS1591
 }

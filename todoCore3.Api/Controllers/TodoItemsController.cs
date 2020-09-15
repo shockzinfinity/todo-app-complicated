@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using todoCore3.Api.Models;
 
 namespace todoCore3.Api.Controllers
 {
+	[Produces("application/json")]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class TodoItemsController : ControllerBase
@@ -27,6 +29,10 @@ namespace todoCore3.Api.Controllers
       IsComplete = todoItem.IsCompleted
     };
 
+		/// <summary>
+    /// 모든 Todo Item 을 불러옵니다.
+    /// </summary>
+    /// <returns></returns>
 		// GET: api/TodoItems
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<TodoItemDTO>>> GetTodoItems()
@@ -78,8 +84,27 @@ namespace todoCore3.Api.Controllers
 			return NoContent();
 		}
 
+		/// <summary>
+    /// Todo item 을 생성합니다.
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///		POST api/TodoItems
+    ///		{
+    ///			"name": "Item no 1",
+    ///			"isCompleted": false
+    ///		}
+    ///
+    /// </remarks>
+    /// <param name="todoItemDTO"></param>
+    /// <returns>생성된 Todo item</returns>
+    /// <response code="201">생성된 Todo item</response>
+    /// <response code="400">todo item 이 null 일 경우</response>
 		// POST: api/TodoItems
 		[HttpPost]
+		[ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<ActionResult<TodoItem>> CreateTodoItem(TodoItemDTO todoItemDTO)
 		{
       var todoItem = new TodoItem

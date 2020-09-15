@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,9 +29,34 @@ namespace todoCore3.Api
 			services.AddDbContext<TodoContext>(opt => opt.UseSqlServer("Data Source=sql;Database=todos;Integrated Security=false;User ID=sa;Password=p@ssw0rd"));
 			services.AddControllers();
 
+			//services.AddSwaggerGen(c =>
+			//{
+			//	c.SwaggerDoc("v1", new OpenApiInfo { Title = "Todo API", Version = "v1" });
+			//});
 			services.AddSwaggerGen(c =>
 			{
-				c.SwaggerDoc("v1", new OpenApiInfo { Title = "Todo API", Version = "v1" });
+				c.SwaggerDoc("v1", new OpenApiInfo
+				{
+					Version = "v1",
+					Title = "ToDo API",
+					Description = "Todo App 을 만드는 꽤 복잡한 방법에 대한 ASP.NET Core WebAPI",
+					TermsOfService = new Uri("http://todo.shockz.io/terms"),
+					Contact = new OpenApiContact
+					{
+						Name = "shockz",
+						Email = string.Empty, // 스팸은 먹는겁니다.
+						Url = new Uri("https://twitter.com/somebody"), // 트위터를 안써봐서...
+					},
+					License = new OpenApiLicense
+					{
+						Name = "MIT",
+						Url = new Uri("https://github.com/shockzinfinity/todo-app-complicated/blob/2c4c937fa9ecfca72e37ba4e79581e2eabe4e9b8/LICENSE#L1")
+					}
+				});
+
+				var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+				var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+				c.IncludeXmlComments(xmlPath);
 			});
 		}
 
