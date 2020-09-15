@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using todoCore3.Api.Models;
 
@@ -24,6 +25,11 @@ namespace todoCore3.Api
 		{
 			services.AddDbContext<TodoContext>(opt => opt.UseSqlServer("Data Source=sql;Database=todos;Integrated Security=false;User ID=sa;Password=p@ssw0rd"));
 			services.AddControllers();
+
+			services.AddSwaggerGen(c =>
+			{
+				c.SwaggerDoc("v1", new OpenApiInfo { Title = "Todo API", Version = "v1" });
+			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,19 +49,18 @@ namespace todoCore3.Api
 
       app.UseSerilogRequestLogging();
 
+			app.UseStaticFiles(); // Swagger UI 가 Static files를 사용하므로 추가
+
+			app.UseSwagger(); // JSON endpoint 로 생성된 Swagger 활성화
+			app.UseSwaggerUI(c =>
+			{
+				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Todo API v1");
+				c.RoutePrefix = string.Empty;
+			});
+
 			app.UseRouting();
 
 			app.UseAuthorization();
-
-			//using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-			//{
-			//	var context = serviceScope.ServiceProvider.GetService<TodoContext>();
-
-			//	if (context.Database.GetPendingMigrations().Any())
-			//	{
-			//		context.Database.Migrate();
-			//	}
-			//}
 
 			app.UseEndpoints(endpoints =>
 			{
