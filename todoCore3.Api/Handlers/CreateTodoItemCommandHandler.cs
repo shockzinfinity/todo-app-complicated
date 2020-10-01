@@ -8,7 +8,13 @@ namespace todoCore3.Api.Handlers
   {
     public CreateTodoItemResponseModel CreateTodoItem(CreateTodoItemRequestModel requestModel)
     {
-      throw new NotImplementedException();
+      var todoItem = new TodoItem
+      {
+        IsCompleted = requestModel.IsComplete,
+        Name = requestModel.Name
+      };
+
+      
     }
   }
 }
