@@ -26,7 +26,8 @@ namespace todoCore3.Api.Controllers
     {
       Id = todoItem.Id,
       Name = todoItem.Name,
-      IsComplete = todoItem.IsCompleted
+      IsComplete = todoItem.IsCompleted,
+      CategoryId = todoItem.CategoryId
     };
 
     /// <summary>
@@ -71,6 +72,7 @@ namespace todoCore3.Api.Controllers
 
       todoItem.Name = todoItemDTO.Name;
       todoItem.IsCompleted = todoItemDTO.IsComplete;
+      todoItem.CategoryId = todoItemDTO.CategoryId;
 
       try
       {
@@ -110,7 +112,8 @@ namespace todoCore3.Api.Controllers
       var todoItem = new TodoItem
       {
         IsCompleted = todoItemDTO.IsComplete,
-        Name = todoItemDTO.Name
+        Name = todoItemDTO.Name,
+        CategoryId = todoItemDTO.CategoryId
       };
 
       _context.TodoItems.Add(todoItem);
