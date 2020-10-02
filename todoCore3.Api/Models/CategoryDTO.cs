@@ -1,18 +1,12 @@
-using System.ComponentModel;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace todoCore3.Api.Models
 {
-  public class TodoItemDTO
+  public class CategoryDTO
   {
     public long Id { get; set; }
-
-    public long CategoryId { get; set; }
-
     [Required]
     public string Name { get; set; }
-
-    [DefaultValue(false)]
-    public bool IsComplete { get; set; }
   }
 }
