@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +30,9 @@ namespace todoCore3.Api.Controllers
       Id = todoItem.Id,
       Name = todoItem.Name,
       IsComplete = todoItem.IsCompleted,
-      CategoryId = todoItem.CategoryId
+      CategoryId = todoItem.CategoryId,
+      CreatedAt = todoItem.CreatedAt,
+      UpdatedAt = todoItem.UpdatedAt
     };
 
     /// <summary>
@@ -75,6 +78,7 @@ namespace todoCore3.Api.Controllers
       todoItem.Name = todoItemDTO.Name;
       todoItem.IsCompleted = todoItemDTO.IsComplete;
       todoItem.CategoryId = todoItemDTO.CategoryId;
+      todoItem.UpdatedAt = DateTime.Now;
 
       try
       {
@@ -115,7 +119,9 @@ namespace todoCore3.Api.Controllers
       {
         IsCompleted = todoItemDTO.IsComplete,
         Name = todoItemDTO.Name,
-        CategoryId = todoItemDTO.CategoryId
+        CategoryId = todoItemDTO.CategoryId,
+        CreatedAt = DateTime.Now,
+        UpdatedAt = DateTime.Now
       };
 
       _context.TodoItems.Add(todoItem);

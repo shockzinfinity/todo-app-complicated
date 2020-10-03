@@ -9,5 +9,9 @@ namespace todoCore3.Api.Models
     [Required]
     public string Name { get; set; }
     public string BgColor { get; set; }
+    [Required]
+    public int UserId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
   }
 }
