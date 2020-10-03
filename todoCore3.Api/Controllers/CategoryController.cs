@@ -27,7 +27,8 @@ namespace todoCore3.Api.Controllers
     private static CategoryDTO CategoryToDTO(Category category) => new CategoryDTO
     {
       Id = category.Id,
-      Name = category.Name
+      Name = category.Name,
+      BgColor = category.BgColor
     };
 
     /// <summary>
@@ -68,6 +69,7 @@ namespace todoCore3.Api.Controllers
       }
 
       category.Name = categoryDTO.Name;
+      category.BgColor = categoryDTO.BgColor;
 
       try
       {
@@ -104,7 +106,8 @@ namespace todoCore3.Api.Controllers
     {
       var category = new Category
       {
-        Name = categoryDTO.Name
+        Name = categoryDTO.Name,
+        BgColor = categoryDTO.BgColor
       };
 
       _context.Categories.Add(category);

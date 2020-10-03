@@ -8,5 +8,6 @@ namespace todoCore3.Api.Models
     public long Id { get; set; }
     [Required]
     public string Name { get; set; }
+    public string BgColor { get; set; }
   }
 }
