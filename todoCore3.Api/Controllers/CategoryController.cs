@@ -28,7 +28,10 @@ namespace todoCore3.Api.Controllers
     {
       Id = category.Id,
       Name = category.Name,
-      BgColor = category.BgColor
+      BgColor = category.BgColor,
+      UserId = category.UserId,
+      CreatedAt = category.CreatedAt,
+      UpdatedAt = category.UpdatedAt
     };
 
     /// <summary>
@@ -70,6 +73,8 @@ namespace todoCore3.Api.Controllers
 
       category.Name = categoryDTO.Name;
       category.BgColor = categoryDTO.BgColor;
+      category.UserId = categoryDTO.UserId;
+      category.UpdatedAt = DateTime.Now;
 
       try
       {
@@ -107,7 +112,10 @@ namespace todoCore3.Api.Controllers
       var category = new Category
       {
         Name = categoryDTO.Name,
-        BgColor = categoryDTO.BgColor
+        BgColor = categoryDTO.BgColor,
+        UserId = categoryDTO.UserId,
+        CreatedAt = DateTime.Now,
+        UpdatedAt = DateTime.Now
       };
 
       _context.Categories.Add(category);
