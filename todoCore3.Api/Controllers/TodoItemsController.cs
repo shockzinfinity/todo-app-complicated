@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using todoCore3.Api.Models;
 
 namespace todoCore3.Api.Controllers
 {
+  [Authorize]
   [Produces("application/json")]
   [Route("api/[controller]")]
   [ApiController]
