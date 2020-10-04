@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,17 +12,20 @@ using todoCore3.Api.Models;
 
 namespace todoCore3.Api.Controllers
 {
-    [Authorize]
-    [Produces("application/json")]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CategoryController : ControllerBase
+  [Authorize]
+  [Produces("application/json")]
+  [Route("api/[controller]")]
+  [ApiController]
+  public class CategoryController : ControllerBase
+  {
+    private readonly TodoContext _context;
+    private IMapper _mapper;
+
+    public CategoryController(TodoContext context, IMapper mapper)
     {
-      private readonly TodoContext _context;
-      public CategoryController(TodoContext context)
-      {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-      }
+      _context = context ?? throw new ArgumentNullException(nameof(context));
+      _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+    }
 
     private bool CategoryExists(long id) => _context.Categories.Any(c => c.Id == id);
 
@@ -39,34 +44,79 @@ namespace todoCore3.Api.Controllers
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategorys()
+    public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategories()
     {
+      //var list = _context.Categories
+      //  .GroupJoin(_context.TodoItems, category => category.Id, todoItem => todoItem.CategoryId, (x, y) => new { Category = x, TodoItems = y })
+      //  .SelectMany(x => x.TodoItems.DefaultIfEmpty(), (x, y) => new { Category = x.Category, TodoItems = y });
+
+      //var categoryList = _context.Categories.Where(c => c.UserId == 1).ToList();
+      //var items = _context.TodoItems.Where(x => categoryList.Select(c => c.Id).ToList().Contains(x.CategoryId)).ToList();
+
+      //return await categoryList.Select(c => new
+      //{
+      //  Id = c.Id,
+      //  Name = c.Id,
+      //  BgColor = c.BgColor,
+      //  UserId = c.UserId,
+      //  CreatedAt = c.CreatedAt,
+      //  UpdatedAt = c.UpdatedAt,
+      //  TodoItems = items.Where(t => t.CategoryId == c.Id)
+      //}).ToList();
+
+      var groupJoin = _context.Categories.Where(x => x.UserId == 1).ToList().GroupJoin(_context.TodoItems, c => c.Id, t => t.CategoryId, (c, t) => new { Category = c, Items = t });
+
       return await _context.Categories.Select(x => CategoryToDTO(x)).ToListAsync();
     }
 
+    //[HttpGet("{id}")]
+    //public async Task<ActionResult<CategoryDTO>> GetCategory(long id)
+    //{
+    //  var category = await _context.Categories.FindAsync(id);
+
+    //  if (category == null)
+    //  {
+    //    return NotFound();
+    //  }
+
+    //  return CategoryToDTO(category);
+    //}
+
+    //[Route("GetCategoryBy")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<CategoryDTO>> GetCategory(long id)
+    public async Task<ActionResult<CategoryWithItems>> GetCategory(long id)
     {
       var category = await _context.Categories.FindAsync(id);
 
-      if(category == null)
+      if (category == null)
       {
         return NotFound();
       }
 
-      return CategoryToDTO(category);
+      var items = await _context.TodoItems.Where(x => x.CategoryId == id).ToListAsync();
+
+      return new CategoryWithItems
+      {
+        Id = category.Id,
+        Name = category.Name,
+        BgColor = category.BgColor,
+        UserId = category.UserId,
+        CreatedAt = category.CreatedAt,
+        UpdatedAt = category.UpdatedAt,
+        TodoItems = _mapper.Map<IEnumerable<TodoItemDTO>>(items)
+      };
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCategory(long id, CategoryDTO categoryDTO)
     {
-      if(id != categoryDTO.Id)
+      if (id != categoryDTO.Id)
       {
         return BadRequest();
       }
 
       var category = await _context.Categories.FindAsync(id);
-      if(category == null)
+      if (category == null)
       {
         return NotFound();
       }
@@ -129,7 +179,7 @@ namespace todoCore3.Api.Controllers
     {
       var category = await _context.Categories.FindAsync(id);
 
-      if(category == null)
+      if (category == null)
       {
         return NotFound();
       }
