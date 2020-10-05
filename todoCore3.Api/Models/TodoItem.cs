@@ -7,7 +7,10 @@ namespace todoCore3.Api.Models
   public class TodoItem
   {
     public long Id { get; set; }
-    public long CategoryId { get; set; }
+    //public long CategoryId { get; set; }
+    public long FlowId { get; set; }
+    [DefaultValue(65536)]
+    public long Pos { get; set; }
     [Required]
     public string Name { get; set; }
     [DefaultValue(false)]

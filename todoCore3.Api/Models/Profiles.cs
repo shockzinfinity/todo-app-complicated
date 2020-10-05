@@ -13,4 +13,12 @@ namespace todoCore3.Api.Models
       CreateMap<TodoItem, TodoItemDTO>();
     }
   }
+
+  public class FlowProfile : Profile
+  {
+    public FlowProfile()
+    {
+      CreateMap<Flow, FlowDTO>();
+    }
+  }
 }
