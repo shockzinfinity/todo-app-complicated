@@ -44,45 +44,24 @@ namespace todoCore3.Api.Controllers
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategories()
+    public async Task<ActionResult<IEnumerable<CategoryWithItems>>> GetCategories()
     {
-      //var list = _context.Categories
-      //  .GroupJoin(_context.TodoItems, category => category.Id, todoItem => todoItem.CategoryId, (x, y) => new { Category = x, TodoItems = y })
-      //  .SelectMany(x => x.TodoItems.DefaultIfEmpty(), (x, y) => new { Category = x.Category, TodoItems = y });
+      // TODO: 테스트를 위해 UserId 는 1로 설정 추후 헤더에서 UserId 추출 후 쿼리
+      var categories = await _context.Categories.Where(x => x.UserId == 1).ToListAsync();
+      var results = categories.GroupJoin(_context.TodoItems, c => c.Id, t => t.CategoryId, (c, t) => new CategoryWithItems
+      {
+        Id = c.Id,
+        Name = c.Name,
+        BgColor = c.BgColor,
+        UserId = c.UserId,
+        CreatedAt = c.CreatedAt,
+        UpdatedAt = c.UpdatedAt,
+        TodoItems = _mapper.Map<IEnumerable<TodoItemDTO>>(t)
+      }).ToList();
 
-      //var categoryList = _context.Categories.Where(c => c.UserId == 1).ToList();
-      //var items = _context.TodoItems.Where(x => categoryList.Select(c => c.Id).ToList().Contains(x.CategoryId)).ToList();
-
-      //return await categoryList.Select(c => new
-      //{
-      //  Id = c.Id,
-      //  Name = c.Id,
-      //  BgColor = c.BgColor,
-      //  UserId = c.UserId,
-      //  CreatedAt = c.CreatedAt,
-      //  UpdatedAt = c.UpdatedAt,
-      //  TodoItems = items.Where(t => t.CategoryId == c.Id)
-      //}).ToList();
-
-      var groupJoin = _context.Categories.Where(x => x.UserId == 1).ToList().GroupJoin(_context.TodoItems, c => c.Id, t => t.CategoryId, (c, t) => new { Category = c, Items = t });
-
-      return await _context.Categories.Select(x => CategoryToDTO(x)).ToListAsync();
+      return results;
     }
 
-    //[HttpGet("{id}")]
-    //public async Task<ActionResult<CategoryDTO>> GetCategory(long id)
-    //{
-    //  var category = await _context.Categories.FindAsync(id);
-
-    //  if (category == null)
-    //  {
-    //    return NotFound();
-    //  }
-
-    //  return CategoryToDTO(category);
-    //}
-
-    //[Route("GetCategoryBy")]
     [HttpGet("{id}")]
     public async Task<ActionResult<CategoryWithItems>> GetCategory(long id)
     {
