@@ -31,6 +31,7 @@ namespace todoCore3.Api.Controllers
       Name = todoItem.Name,
       IsComplete = todoItem.IsCompleted,
       //CategoryId = todoItem.CategoryId,
+      FlowId = todoItem.FlowId,
       CreatedAt = todoItem.CreatedAt,
       UpdatedAt = todoItem.UpdatedAt
     };
@@ -78,6 +79,7 @@ namespace todoCore3.Api.Controllers
       todoItem.Name = todoItemDTO.Name;
       todoItem.IsCompleted = todoItemDTO.IsComplete;
       //todoItem.CategoryId = todoItemDTO.CategoryId;
+      todoItem.FlowId = todoItemDTO.FlowId;
       todoItem.UpdatedAt = DateTime.Now;
 
       try
@@ -120,6 +122,7 @@ namespace todoCore3.Api.Controllers
         IsCompleted = todoItemDTO.IsComplete,
         Name = todoItemDTO.Name,
         //CategoryId = todoItemDTO.CategoryId,
+        FlowId = todoItemDTO.FlowId,
         CreatedAt = DateTime.Now,
         UpdatedAt = DateTime.Now
       };
