@@ -2,7 +2,7 @@ using System;
 
 namespace todoCore3.Api.Models
 {
-  public class FlowDTO
+  public class FlowDto
   {
     public long Id { get; set; }
     public string Name { get; set; }

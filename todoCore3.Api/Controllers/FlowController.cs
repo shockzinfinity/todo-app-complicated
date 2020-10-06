@@ -27,7 +27,7 @@ namespace todoCore3.Api.Controllers
 
     private bool FlowExists(long id) => _context.Flows.Any(f => f.Id == id);
 
-    private static FlowDTO FlowToDTO(Flow flow) => new FlowDTO
+    private static FlowDto FlowToDTO(Flow flow) => new FlowDto
     {
       Id = flow.Id,
       Name = flow.Name,
@@ -38,7 +38,7 @@ namespace todoCore3.Api.Controllers
     };
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<FlowDTO>> GetFlow(long id)
+    public async Task<ActionResult<FlowDto>> GetFlow(long id)
     {
       var flow = await _context.Flows.FindAsync(id);
 
@@ -51,7 +51,7 @@ namespace todoCore3.Api.Controllers
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateFlow(long id, FlowDTO flowDTO)
+    public async Task<IActionResult> UpdateFlow(long id, FlowDto flowDTO)
     {
       if (id != flowDTO.Id)
       {
@@ -84,7 +84,7 @@ namespace todoCore3.Api.Controllers
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Flow>> CreateFlow(FlowDTO flowDTO)
+    public async Task<ActionResult<Flow>> CreateFlow(FlowDto flowDTO)
     {
       var flow = new Flow
       {

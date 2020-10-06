@@ -28,7 +28,7 @@ namespace todoCore3.Api.Controllers
 
     private bool CategoryExists(long id) => _context.Categories.Any(c => c.Id == id);
 
-    private static CategoryDTO CategoryToDTO(Category category) => new CategoryDTO
+    private static CategoryDto CategoryToDTO(Category category) => new CategoryDto
     {
       Id = category.Id,
       Name = category.Name,
@@ -44,37 +44,36 @@ namespace todoCore3.Api.Controllers
     /// <returns></returns>
     [HttpGet]
     //public async Task<ActionResult<IEnumerable<CategoryWithItems>>> GetCategories()
-    public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategories()
+    public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
     {
       // TODO: 테스트를 위해 UserId 는 1로 설정 추후 헤더에서 UserId 추출 후 쿼리
-      //var categories = await _context.Categories.Where(x => x.UserId == 1).ToListAsync();
-      //var results = categories.GroupJoin(_context.TodoItems, c => c.Id, t => t.CategoryId, (c, t) => new CategoryWithItems
-      //{
-      //  Id = c.Id,
-      //  Name = c.Name,
-      //  BgColor = c.BgColor,
-      //  UserId = c.UserId,
-      //  CreatedAt = c.CreatedAt,
-      //  UpdatedAt = c.UpdatedAt,
-      //  TodoItems = _mapper.Map<IEnumerable<TodoItemDTO>>(t)
-      //}).ToList();
-
-      //return results;
-
       return await _context.Categories.Select(x => CategoryToDTO(x)).ToListAsync();
     }
 
     [HttpGet("{id}")]
     //public async Task<ActionResult<CategoryWithItems>> GetCategory(long id)
-    public async Task<ActionResult<CategoryDTO>> GetCategory(long id)
+    public async Task<ActionResult<CategoryWithItems>> GetCategory(long id)
     {
-      //var category = await _context.Categories.FindAsync(id);
+      var category = await _context.Categories.FindAsync(id);
 
-      //if (category == null)
-      //{
-      //  return NotFound();
-      //}
+      if (category == null)
+      {
+        return NotFound();
+      }
 
+      var groupJoin = _context.Flows.Where(x => x.CategoryId == id).ToList().GroupJoin(_context.TodoItems,
+          f => f.Id,
+          t => t.FlowId,
+          (f, t) => new FlowWithItems
+          {
+            Id = f.Id,
+            Name = f.Name,
+            Pos = f.Pos,
+            CategoryId = f.CategoryId,
+            CreatedAt = f.CreatedAt,
+            UpdatedAt = f.UpdatedAt,
+            Items = _mapper.Map<IEnumerable<TodoItemDto>>(t)
+          });
       //var items = await _context.TodoItems.Where(x => x.CategoryId == id).ToListAsync();
 
       //return new CategoryWithItems
@@ -88,18 +87,15 @@ namespace todoCore3.Api.Controllers
       //  TodoItems = _mapper.Map<IEnumerable<TodoItemDTO>>(items)
       //};
 
-      var category = await _context.Categories.FindAsync(id);
+      var result = new CategoryWithItems();
+      result = _mapper.Map<CategoryWithItems>(category);
+      result.Lists = groupJoin;
 
-      if (category == null)
-      {
-        return NotFound();
-      }
-
-      return CategoryToDTO(category);
+      return result;
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCategory(long id, CategoryDTO categoryDTO)
+    public async Task<IActionResult> UpdateCategory(long id, CategoryDto categoryDTO)
     {
       if (id != categoryDTO.Id)
       {
@@ -148,7 +144,7 @@ namespace todoCore3.Api.Controllers
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Category>> CreateCategory(CategoryDTO categoryDTO)
+    public async Task<ActionResult<Category>> CreateCategory(CategoryDto categoryDTO)
     {
       var category = new Category
       {
