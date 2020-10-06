@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -44,27 +43,51 @@ namespace todoCore3.Api.Controllers
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CategoryWithItems>>> GetCategories()
+    //public async Task<ActionResult<IEnumerable<CategoryWithItems>>> GetCategories()
+    public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategories()
     {
       // TODO: 테스트를 위해 UserId 는 1로 설정 추후 헤더에서 UserId 추출 후 쿼리
-      var categories = await _context.Categories.Where(x => x.UserId == 1).ToListAsync();
-      var results = categories.GroupJoin(_context.TodoItems, c => c.Id, t => t.CategoryId, (c, t) => new CategoryWithItems
-      {
-        Id = c.Id,
-        Name = c.Name,
-        BgColor = c.BgColor,
-        UserId = c.UserId,
-        CreatedAt = c.CreatedAt,
-        UpdatedAt = c.UpdatedAt,
-        TodoItems = _mapper.Map<IEnumerable<TodoItemDTO>>(t)
-      }).ToList();
+      //var categories = await _context.Categories.Where(x => x.UserId == 1).ToListAsync();
+      //var results = categories.GroupJoin(_context.TodoItems, c => c.Id, t => t.CategoryId, (c, t) => new CategoryWithItems
+      //{
+      //  Id = c.Id,
+      //  Name = c.Name,
+      //  BgColor = c.BgColor,
+      //  UserId = c.UserId,
+      //  CreatedAt = c.CreatedAt,
+      //  UpdatedAt = c.UpdatedAt,
+      //  TodoItems = _mapper.Map<IEnumerable<TodoItemDTO>>(t)
+      //}).ToList();
 
-      return results;
+      //return results;
+
+      return await _context.Categories.Select(x => CategoryToDTO(x)).ToListAsync();
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CategoryWithItems>> GetCategory(long id)
+    //public async Task<ActionResult<CategoryWithItems>> GetCategory(long id)
+    public async Task<ActionResult<CategoryDTO>> GetCategory(long id)
     {
+      //var category = await _context.Categories.FindAsync(id);
+
+      //if (category == null)
+      //{
+      //  return NotFound();
+      //}
+
+      //var items = await _context.TodoItems.Where(x => x.CategoryId == id).ToListAsync();
+
+      //return new CategoryWithItems
+      //{
+      //  Id = category.Id,
+      //  Name = category.Name,
+      //  BgColor = category.BgColor,
+      //  UserId = category.UserId,
+      //  CreatedAt = category.CreatedAt,
+      //  UpdatedAt = category.UpdatedAt,
+      //  TodoItems = _mapper.Map<IEnumerable<TodoItemDTO>>(items)
+      //};
+
       var category = await _context.Categories.FindAsync(id);
 
       if (category == null)
@@ -72,18 +95,7 @@ namespace todoCore3.Api.Controllers
         return NotFound();
       }
 
-      var items = await _context.TodoItems.Where(x => x.CategoryId == id).ToListAsync();
-
-      return new CategoryWithItems
-      {
-        Id = category.Id,
-        Name = category.Name,
-        BgColor = category.BgColor,
-        UserId = category.UserId,
-        CreatedAt = category.CreatedAt,
-        UpdatedAt = category.UpdatedAt,
-        TodoItems = _mapper.Map<IEnumerable<TodoItemDTO>>(items)
-      };
+      return CategoryToDTO(category);
     }
 
     [HttpPut("{id}")]
@@ -127,7 +139,7 @@ namespace todoCore3.Api.Controllers
     ///   {
     ///     name: "Category 1"
     ///   }
-    ///   
+    ///
     /// </remarks>
     /// <param name="categoryDTO"></param>
     /// <returns>생성된 Category</returns>
