@@ -25,7 +25,7 @@ namespace todoCore3.Api.Controllers
 
     private bool TodoItemExists(long id) => _context.TodoItems.Any(e => e.Id == id);
 
-    private static TodoItemDTO ItemToDTO(TodoItem todoItem) => new TodoItemDTO
+    private static TodoItemDto ItemToDTO(TodoItem todoItem) => new TodoItemDto
     {
       Id = todoItem.Id,
       Name = todoItem.Name,
@@ -41,14 +41,14 @@ namespace todoCore3.Api.Controllers
     /// <returns></returns>
     // GET: api/TodoItems
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TodoItemDTO>>> GetTodoItems()
+    public async Task<ActionResult<IEnumerable<TodoItemDto>>> GetTodoItems()
     {
       return await _context.TodoItems.Select(x => ItemToDTO(x)).ToListAsync();
     }
 
     // GET: api/TodoItems/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<TodoItemDTO>> GetTodoItem(long id)
+    public async Task<ActionResult<TodoItemDto>> GetTodoItem(long id)
     {
       var todoItem = await _context.TodoItems.FindAsync(id);
 
@@ -62,7 +62,7 @@ namespace todoCore3.Api.Controllers
 
     // PUT: api/TodoItems/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateTodoItem(long id, TodoItemDTO todoItemDTO)
+    public async Task<IActionResult> UpdateTodoItem(long id, TodoItemDto todoItemDTO)
     {
       if (id != todoItemDTO.Id)
       {
@@ -113,7 +113,7 @@ namespace todoCore3.Api.Controllers
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<TodoItem>> CreateTodoItem(TodoItemDTO todoItemDTO)
+    public async Task<ActionResult<TodoItem>> CreateTodoItem(TodoItemDto todoItemDTO)
     {
       var todoItem = new TodoItem
       {
