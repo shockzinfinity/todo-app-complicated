@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using todoCore3.Api.Models;
 
 namespace todoCore3.Api.Services
@@ -9,10 +8,15 @@ namespace todoCore3.Api.Services
   public interface IUserService
   {
     User Authenticate(string username, string password);
+
     IEnumerable<User> GetAll();
+
     User GetBy(int id);
+
     User Create(User user, string password);
+
     void Update(User user, string password = null);
+
     void Delete(int id);
   }
 
@@ -61,7 +65,7 @@ namespace todoCore3.Api.Services
     public void Delete(int id)
     {
       var user = _context.Users.Find(id);
-      if(user != null)
+      if (user != null)
       {
         _context.Users.Remove(user);
         _context.SaveChanges();
@@ -84,7 +88,7 @@ namespace todoCore3.Api.Services
 
       if (updateUser == null) throw new AppException("User not found.");
 
-      if(!string.IsNullOrWhiteSpace(user.Username) && user.Username != user.Username)
+      if (!string.IsNullOrWhiteSpace(user.Username) && user.Username != user.Username)
       {
         if (_context.Users.Any(u => u.Username == user.Username))
           throw new AppException($"Username: '${user.Username}'is taken.");
@@ -98,7 +102,7 @@ namespace todoCore3.Api.Services
       if (!string.IsNullOrWhiteSpace(user.LastName))
         updateUser.LastName = user.LastName;
 
-      if(!string.IsNullOrWhiteSpace(password))
+      if (!string.IsNullOrWhiteSpace(password))
       {
         byte[] passwordHash, passwordSalt;
         CreatePasswordHash(password, out passwordHash, out passwordSalt);
