@@ -77,6 +77,7 @@ namespace todoCore3.Api.Controllers
       }
 
       todoItem.Name = todoItemDTO.Name;
+      todoItem.Pos = todoItemDTO.Pos;
       todoItem.Description = todoItemDTO.Description;
       todoItem.IsCompleted = todoItemDTO.IsComplete;
       todoItem.FlowId = todoItemDTO.FlowId;
