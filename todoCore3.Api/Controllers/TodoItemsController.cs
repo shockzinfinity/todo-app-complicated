@@ -29,8 +29,8 @@ namespace todoCore3.Api.Controllers
     {
       Id = todoItem.Id,
       Name = todoItem.Name,
+      Description = todoItem.Description,
       IsComplete = todoItem.IsCompleted,
-      //CategoryId = todoItem.CategoryId,
       FlowId = todoItem.FlowId,
       CreatedAt = todoItem.CreatedAt,
       UpdatedAt = todoItem.UpdatedAt
@@ -77,8 +77,8 @@ namespace todoCore3.Api.Controllers
       }
 
       todoItem.Name = todoItemDTO.Name;
+      todoItem.Description = todoItemDTO.Description;
       todoItem.IsCompleted = todoItemDTO.IsComplete;
-      //todoItem.CategoryId = todoItemDTO.CategoryId;
       todoItem.FlowId = todoItemDTO.FlowId;
       todoItem.UpdatedAt = DateTime.Now;
 
@@ -121,7 +121,7 @@ namespace todoCore3.Api.Controllers
       {
         IsCompleted = todoItemDTO.IsComplete,
         Name = todoItemDTO.Name,
-        //CategoryId = todoItemDTO.CategoryId,
+        Description = todoItemDTO.Description,
         FlowId = todoItemDTO.FlowId,
         CreatedAt = DateTime.Now,
         UpdatedAt = DateTime.Now
