@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using todoCore3.Api.Models;
@@ -17,10 +19,12 @@ namespace todoCore3.Api.Controllers
   public class TodoItemsController : ControllerBase
   {
     private readonly TodoContext _context;
+    private readonly IMapper _mapper;
 
-    public TodoItemsController(TodoContext context)
+    public TodoItemsController(TodoContext context, IMapper mapper)
     {
-      _context = context;
+      _context = context ?? throw new ArgumentNullException(nameof(context));
+      _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     private bool TodoItemExists(long id) => _context.TodoItems.Any(e => e.Id == id);
@@ -88,6 +92,32 @@ namespace todoCore3.Api.Controllers
         await _context.SaveChangesAsync();
       }
       catch (DbUpdateConcurrencyException) when (!TodoItemExists(id))
+      {
+        return NotFound();
+      }
+
+      return NoContent();
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PatchTodoItem(long id, [FromBody] JsonPatchDocument<TodoItemDto> patchItem)
+    {
+      var todoItem = await _context.TodoItems.FindAsync(id);
+      if (todoItem == null)
+      {
+        return NotFound();
+      }
+
+      TodoItemDto itemDto = _mapper.Map<TodoItemDto>(todoItem);
+
+      patchItem.ApplyTo(itemDto);
+      _mapper.Map(itemDto, todoItem);
+
+      try
+      {
+        await _context.SaveChangesAsync();
+      }
+      catch (DbUpdateConcurrencyException) when(!TodoItemExists(id))
       {
         return NotFound();
       }

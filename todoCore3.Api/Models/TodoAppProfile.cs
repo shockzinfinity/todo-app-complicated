@@ -7,6 +7,7 @@ namespace todoCore3.Api.Models
     public TodoAppProfile()
     {
       CreateMap<TodoItem, TodoItemDto>();
+      CreateMap<TodoItemDto, TodoItem>();
       CreateMap<Flow, FlowDto>();
       CreateMap<Category, CategoryDto>();
       CreateMap<Category, CategoryWithItems>();
