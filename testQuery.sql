@@ -46,3 +46,5 @@ WHERE [FlowId] = 7
 -- DELETE FROM [dbo].[Flows] WHERE [Id] IN (4, 5, 6)
 
 
+-- DELETE FROM [dbo].[TodoItems] WHERE [Id] IN (24, 25, 26)
+-- DELETE FROM [dbo].[Flows] WHERE [Id] IN (16, 17, 18, 19)
