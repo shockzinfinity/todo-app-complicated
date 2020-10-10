@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace todoCore3.Api.Models
@@ -7,6 +6,7 @@ namespace todoCore3.Api.Models
   {
     [Required]
     public string Username { get; set; }
+
     [Required]
     public string Password { get; set; }
   }

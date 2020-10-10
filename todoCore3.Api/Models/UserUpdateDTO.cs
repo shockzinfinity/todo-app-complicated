@@ -1,4 +1,3 @@
-using System;
 namespace todoCore3.Api.Models
 {
   public class UserUpdateDTO

@@ -1,4 +1,3 @@
-using System;
 using AutoMapper;
 using todoCore3.Api.Models;
 

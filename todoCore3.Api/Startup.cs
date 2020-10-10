@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,7 +33,7 @@ namespace todoCore3.Api
     {
       services.AddDbContext<TodoContext>(opt => opt.UseSqlServer("Data Source=sql;Database=todos;Integrated Security=false;User ID=sa;Password=p@ssw0rd"));
       services.AddCors();
-      services.AddControllers();
+      services.AddControllers().AddNewtonsoftJson();
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
       var appSettingsSection = Configuration.GetSection("AppSettings");

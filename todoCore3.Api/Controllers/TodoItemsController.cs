@@ -1,10 +1,13 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using todoCore3.Api.Models;
 
 namespace todoCore3.Api.Controllers
@@ -16,20 +19,25 @@ namespace todoCore3.Api.Controllers
   public class TodoItemsController : ControllerBase
   {
     private readonly TodoContext _context;
+    private readonly IMapper _mapper;
 
-    public TodoItemsController(TodoContext context)
+    public TodoItemsController(TodoContext context, IMapper mapper)
     {
-      _context = context;
+      _context = context ?? throw new ArgumentNullException(nameof(context));
+      _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     private bool TodoItemExists(long id) => _context.TodoItems.Any(e => e.Id == id);
 
-    private static TodoItemDTO ItemToDTO(TodoItem todoItem) => new TodoItemDTO
+    private static TodoItemDto ItemToDTO(TodoItem todoItem) => new TodoItemDto
     {
       Id = todoItem.Id,
       Name = todoItem.Name,
+      Description = todoItem.Description,
       IsComplete = todoItem.IsCompleted,
-      CategoryId = todoItem.CategoryId
+      FlowId = todoItem.FlowId,
+      CreatedAt = todoItem.CreatedAt,
+      UpdatedAt = todoItem.UpdatedAt
     };
 
     /// <summary>
@@ -38,14 +46,14 @@ namespace todoCore3.Api.Controllers
     /// <returns></returns>
     // GET: api/TodoItems
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TodoItemDTO>>> GetTodoItems()
+    public async Task<ActionResult<IEnumerable<TodoItemDto>>> GetTodoItems()
     {
       return await _context.TodoItems.Select(x => ItemToDTO(x)).ToListAsync();
     }
 
     // GET: api/TodoItems/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<TodoItemDTO>> GetTodoItem(long id)
+    public async Task<ActionResult<TodoItemDto>> GetTodoItem(long id)
     {
       var todoItem = await _context.TodoItems.FindAsync(id);
 
@@ -59,7 +67,7 @@ namespace todoCore3.Api.Controllers
 
     // PUT: api/TodoItems/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateTodoItem(long id, TodoItemDTO todoItemDTO)
+    public async Task<IActionResult> UpdateTodoItem(long id, TodoItemDto todoItemDTO)
     {
       if (id != todoItemDTO.Id)
       {
@@ -73,14 +81,43 @@ namespace todoCore3.Api.Controllers
       }
 
       todoItem.Name = todoItemDTO.Name;
+      todoItem.Pos = todoItemDTO.Pos;
+      todoItem.Description = todoItemDTO.Description;
       todoItem.IsCompleted = todoItemDTO.IsComplete;
-      todoItem.CategoryId = todoItemDTO.CategoryId;
+      todoItem.FlowId = todoItemDTO.FlowId;
+      todoItem.UpdatedAt = DateTime.Now;
 
       try
       {
         await _context.SaveChangesAsync();
       }
       catch (DbUpdateConcurrencyException) when (!TodoItemExists(id))
+      {
+        return NotFound();
+      }
+
+      return NoContent();
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PatchTodoItem(long id, [FromBody] JsonPatchDocument<TodoItemDto> patchItem)
+    {
+      var todoItem = await _context.TodoItems.FindAsync(id);
+      if (todoItem == null)
+      {
+        return NotFound();
+      }
+
+      TodoItemDto itemDto = _mapper.Map<TodoItemDto>(todoItem);
+
+      patchItem.ApplyTo(itemDto);
+      _mapper.Map(itemDto, todoItem);
+
+      try
+      {
+        await _context.SaveChangesAsync();
+      }
+      catch (DbUpdateConcurrencyException) when(!TodoItemExists(id))
       {
         return NotFound();
       }
@@ -109,13 +146,17 @@ namespace todoCore3.Api.Controllers
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<TodoItem>> CreateTodoItem(TodoItemDTO todoItemDTO)
+    public async Task<ActionResult<TodoItem>> CreateTodoItem(TodoItemDto todoItemDTO)
     {
       var todoItem = new TodoItem
       {
         IsCompleted = todoItemDTO.IsComplete,
         Name = todoItemDTO.Name,
-        CategoryId = todoItemDTO.CategoryId
+        Pos = todoItemDTO.Pos,
+        Description = todoItemDTO.Description,
+        FlowId = todoItemDTO.FlowId,
+        CreatedAt = DateTime.Now,
+        UpdatedAt = DateTime.Now
       };
 
       _context.TodoItems.Add(todoItem);
