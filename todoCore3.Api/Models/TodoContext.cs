@@ -13,8 +13,15 @@ namespace todoCore3.Api.Models
       //optionsBuilder.UseSqlServer("Data Source=sql;Database=todos;Integrated Security=false;User ID=sa;Password=p@ssw0rd;");
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      modelBuilder.Entity<Flow>().Property(p => p.Pos).HasDefaultValue(65536);
+      modelBuilder.Entity<TodoItem>().Property(p => p.Pos).HasDefaultValue(65536);
+    }
+
     public DbSet<TodoItem> TodoItems { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Flow> Flows { get; set; }
     public DbSet<User> Users { get; set; }
   }
 }
