@@ -72,8 +72,8 @@ namespace todoCore3.Api.Controllers
             CategoryId = f.CategoryId,
             CreatedAt = f.CreatedAt,
             UpdatedAt = f.UpdatedAt,
-            Items = _mapper.Map<IEnumerable<TodoItemDto>>(t)
-          });
+            Items = _mapper.Map<IEnumerable<TodoItemDto>>(t.OrderBy(p => p.Pos))
+          }).OrderBy(o => o.Pos);
       //var items = await _context.TodoItems.Where(x => x.CategoryId == id).ToListAsync();
 
       //return new CategoryWithItems

@@ -152,6 +152,7 @@ namespace todoCore3.Api.Controllers
       {
         IsCompleted = todoItemDTO.IsComplete,
         Name = todoItemDTO.Name,
+        Pos = todoItemDTO.Pos,
         Description = todoItemDTO.Description,
         FlowId = todoItemDTO.FlowId,
         CreatedAt = DateTime.Now,
