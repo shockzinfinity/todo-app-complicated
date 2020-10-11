@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using todoCore3.Api.Models;
@@ -43,7 +44,6 @@ namespace todoCore3.Api.Controllers
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    //public async Task<ActionResult<IEnumerable<CategoryWithItems>>> GetCategories()
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
     {
       // TODO: 테스트를 위해 UserId 는 1로 설정 추후 헤더에서 UserId 추출 후 쿼리
@@ -51,7 +51,6 @@ namespace todoCore3.Api.Controllers
     }
 
     [HttpGet("{id}")]
-    //public async Task<ActionResult<CategoryWithItems>> GetCategory(long id)
     public async Task<ActionResult<CategoryWithItems>> GetCategory(long id)
     {
       var category = await _context.Categories.FindAsync(id);
@@ -74,18 +73,6 @@ namespace todoCore3.Api.Controllers
             UpdatedAt = f.UpdatedAt,
             Items = _mapper.Map<IEnumerable<TodoItemDto>>(t.OrderBy(p => p.Pos))
           }).OrderBy(o => o.Pos);
-      //var items = await _context.TodoItems.Where(x => x.CategoryId == id).ToListAsync();
-
-      //return new CategoryWithItems
-      //{
-      //  Id = category.Id,
-      //  Name = category.Name,
-      //  BgColor = category.BgColor,
-      //  UserId = category.UserId,
-      //  CreatedAt = category.CreatedAt,
-      //  UpdatedAt = category.UpdatedAt,
-      //  TodoItems = _mapper.Map<IEnumerable<TodoItemDTO>>(items)
-      //};
 
       var result = new CategoryWithItems();
       result = _mapper.Map<CategoryWithItems>(category);
@@ -112,6 +99,32 @@ namespace todoCore3.Api.Controllers
       category.BgColor = categoryDTO.BgColor;
       category.UserId = categoryDTO.UserId;
       category.UpdatedAt = DateTime.Now;
+
+      try
+      {
+        await _context.SaveChangesAsync();
+      }
+      catch (DbUpdateConcurrencyException) when (!CategoryExists(id))
+      {
+        return NotFound();
+      }
+
+      return NoContent();
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PatchTodoItem(long id, [FromBody] JsonPatchDocument<CategoryDto> patchItem)
+    {
+      var category = await _context.Categories.FindAsync(id);
+      if(category == null)
+      {
+        return NotFound();
+      }
+
+      CategoryDto categoryDto = _mapper.Map<CategoryDto>(category);
+
+      patchItem.ApplyTo(categoryDto);
+      _mapper.Map(categoryDto, category);
 
       try
       {

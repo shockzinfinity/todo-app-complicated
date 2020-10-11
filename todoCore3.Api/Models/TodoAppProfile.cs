@@ -10,6 +10,7 @@ namespace todoCore3.Api.Models
       CreateMap<TodoItemDto, TodoItem>();
       CreateMap<Flow, FlowDto>();
       CreateMap<Category, CategoryDto>();
+      CreateMap<CategoryDto, Category>();
       CreateMap<Category, CategoryWithItems>();
     }
   }

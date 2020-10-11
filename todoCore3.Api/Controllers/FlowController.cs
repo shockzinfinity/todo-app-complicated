@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using todoCore3.Api.Models;
@@ -68,6 +69,31 @@ namespace todoCore3.Api.Controllers
       flow.Pos = flowDTO.Pos;
       flow.CategoryId = flowDTO.CategoryId;
       flow.UpdatedAt = DateTime.Now;
+
+      try
+      {
+        await _context.SaveChangesAsync();
+      }
+      catch (DbUpdateConcurrencyException) when (!FlowExists(id))
+      {
+        return NotFound();
+      }
+
+      return NoContent();
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PatchTodoItem(long id, [FromBody] JsonPatchDocument<FlowDto> patchItem)
+    {
+      var flow = await _context.Flows.FindAsync(id);
+      if (flow == null)
+      {
+        return NotFound();
+      }
+
+      FlowDto flowDto = _mapper.Map<FlowDto>(flow);
+      patchItem.ApplyTo(flowDto);
+      _mapper.Map(flowDto, flow);
 
       try
       {
