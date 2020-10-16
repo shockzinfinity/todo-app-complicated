@@ -28,9 +28,10 @@ namespace todoCore3.Api
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddDbContext<TodoContext>(opt => opt.UseSqlServer("Data Source=sql;Database=todos;Integrated Security=false;User ID=sa;Password=p@ssw0rd"));
+      //services.AddDbContext<TodoContext>(opt => opt.UseSqlServer("Data Source=sql;Database=todos;Integrated Security=false;User ID=sa;Password=p@ssw0rd"));
+      services.AddDbContext<TodoContext>();
       services.AddCors();
-      services.AddControllers().AddNewtonsoftJson();
+      services.AddControllers().AddNewtonsoftJson().AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
       services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
       services.AddScoped<IAccountService, AccountService>();

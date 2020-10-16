@@ -10,6 +10,7 @@ using todoCore3.Api.Services;
 namespace todoCore3.Api.Controllers
 {
   [Route("api/[controller]")]
+  [Produces("application/json")]
   [ApiController]
   public class AccountsController : BaseController
   {
