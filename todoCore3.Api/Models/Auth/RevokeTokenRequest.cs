@@ -1,4 +1,3 @@
-using System;
 namespace todoCore3.Api.Models.Auth
 {
   public class RevokeTokenRequest

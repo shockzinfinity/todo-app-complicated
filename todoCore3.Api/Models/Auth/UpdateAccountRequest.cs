@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using todoCore3.Api.Models.Auth.Entities;
 

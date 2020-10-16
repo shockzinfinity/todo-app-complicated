@@ -1,19 +1,16 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using todoCore3.Api.Middleware;
 using todoCore3.Api.Models;
 using todoCore3.Api.Services;
 
@@ -35,52 +32,10 @@ namespace todoCore3.Api
       services.AddCors();
       services.AddControllers().AddNewtonsoftJson();
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+      services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+      services.AddScoped<IAccountService, AccountService>();
+      services.AddScoped<IEmailService, EmailService>();
 
-      var appSettingsSection = Configuration.GetSection("AppSettings");
-      services.Configure<AppSettings>(appSettingsSection);
-
-      var appSettings = appSettingsSection.Get<AppSettings>();
-      var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-      services.AddAuthentication(s =>
-      {
-        s.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        s.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-      })
-      .AddJwtBearer(j =>
-      {
-        j.Events = new JwtBearerEvents
-        {
-          OnTokenValidated = context =>
-          {
-            var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-            var userId = int.Parse(context.Principal.Identity.Name);
-            var user = userService.GetBy(userId);
-            if (user == null)
-            {
-              context.Fail("Unauthorized");
-            }
-
-            return Task.CompletedTask;
-          }
-        };
-
-        j.RequireHttpsMetadata = false;
-        j.SaveToken = true;
-        j.TokenValidationParameters = new TokenValidationParameters
-        {
-          ValidateIssuerSigningKey = true,
-          IssuerSigningKey = new SymmetricSecurityKey(key),
-          ValidateIssuer = false,
-          ValidateAudience = false
-        };
-      });
-
-      services.AddScoped<IUserService, UserService>();
-
-      //services.AddSwaggerGen(c =>
-      //{
-      //	c.SwaggerDoc("v1", new OpenApiInfo { Title = "Todo API", Version = "v1" });
-      //});
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new OpenApiInfo
@@ -136,10 +91,17 @@ namespace todoCore3.Api
 
       app.UseRouting();
 
-      app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+      //app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+      app.UseCors(c => c
+      .SetIsOriginAllowed(origin => true)
+      .AllowAnyMethod()
+      .AllowAnyHeader()
+      .AllowCredentials());
 
-      app.UseAuthentication();
-      app.UseAuthorization();
+      //app.UseAuthentication();
+      //app.UseAuthorization();
+      app.UseMiddleware<ErrorHandlerMiddleware>();
+      app.UseMiddleware<JwtMiddleware>();
 
       app.UseEndpoints(endpoints =>
       {
