@@ -1,16 +1,21 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using todoCore3.Api.Models.Auth.Entities;
 
 namespace todoCore3.Api.Models
 {
   public class TodoContext : DbContext
   {
-    public TodoContext(DbContextOptions<TodoContext> options) : base(options)
+    private readonly IConfiguration _configuration;
+
+    public TodoContext(DbContextOptions<TodoContext> options, IConfiguration configuration) : base(options)
     {
+      _configuration = configuration;
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-      //optionsBuilder.UseSqlServer("Data Source=sql;Database=todos;Integrated Security=false;User ID=sa;Password=p@ssw0rd;");
+      optionsBuilder.UseSqlServer(_configuration.GetConnectionString("todoCore3Database"));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,5 +28,6 @@ namespace todoCore3.Api.Models
     public DbSet<Category> Categories { get; set; }
     public DbSet<Flow> Flows { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Account> Accounts { get; set; }
   }
 }

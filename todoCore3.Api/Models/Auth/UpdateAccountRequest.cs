@@ -1,10 +1,9 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using todoCore3.Api.Models.Auth.Entities;
 
 namespace todoCore3.Api.Models.Auth
 {
-  public class UpdateRequest
+  public class UpdateAccountRequest
   {
     private string _password;
     private string _confirmPassword;

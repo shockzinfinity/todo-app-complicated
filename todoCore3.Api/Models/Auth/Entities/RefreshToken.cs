@@ -9,6 +9,7 @@ namespace todoCore3.Api.Models.Auth.Entities
   {
     [Key]
     public int Id { get; set; }
+
     public Account Account { get; set; }
     public string Token { get; set; }
     public DateTime ExpiresAt { get; set; }

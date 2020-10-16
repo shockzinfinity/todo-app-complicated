@@ -1,4 +1,5 @@
 using System;
+
 namespace todoCore3.Api.Services
 {
   public interface IEmailService
@@ -6,7 +7,7 @@ namespace todoCore3.Api.Services
     void Send(string to, string subject, string html, string from = null);
   }
 
-  public class EmailService:IEmailService
+  public class EmailService : IEmailService
   {
     public EmailService()
     {
