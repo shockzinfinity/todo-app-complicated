@@ -15,7 +15,7 @@ namespace todoCore3.Api.Models
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-      optionsBuilder.UseSqlServer(_configuration.GetConnectionString(""))
+      optionsBuilder.UseSqlServer(_configuration.GetConnectionString("todoCore3Database"));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,7 +28,6 @@ namespace todoCore3.Api.Models
     public DbSet<Category> Categories { get; set; }
     public DbSet<Flow> Flows { get; set; }
     public DbSet<User> Users { get; set; }
-
     public DbSet<Account> Accounts { get; set; }
   }
 }
