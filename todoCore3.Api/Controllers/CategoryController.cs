@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -116,7 +115,7 @@ namespace todoCore3.Api.Controllers
     public async Task<IActionResult> PatchTodoItem(long id, [FromBody] JsonPatchDocument<CategoryDto> patchItem)
     {
       var category = await _context.Categories.FindAsync(id);
-      if(category == null)
+      if (category == null)
       {
         return NotFound();
       }

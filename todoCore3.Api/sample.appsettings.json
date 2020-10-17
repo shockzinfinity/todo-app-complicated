@@ -1,0 +1,15 @@
+{
+  "AllowedHosts": "*",
+  "SEQ_URL": "http://seq:5341",
+  "AppSettings": {
+    "Secret": "SuperPowerPassword",
+    "EmailFrom": "",
+    "SmtpHost": "",
+    "SmtpPort": "",
+    "SmtpUser": "",
+    "SmtpPassword": ""
+  },
+  "ConnectionStrings": {
+    "todoCore3Database": ""
+  }
+}
