@@ -51,3 +51,16 @@ WHERE [FlowId] = 9
 
 SELECT * FROM [dbo].[Accounts]
 SELECT * FROM [dbo].[RefreshToken]
+
+-- DELETE FROM [dbo].[Accounts]
+
+SELECT * FROM [dbo].[Accounts]
+SELECT
+[Id]
+, [AccountId]
+, [Token]
+, [ExpiresAt]
+, [CreatedAt]
+, [RevokedAt]
+, [ReplacedByToken]
+FROM [dbo].[RefreshToken]
