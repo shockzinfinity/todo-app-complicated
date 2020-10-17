@@ -30,6 +30,8 @@ namespace todoCore3.Api.Services
 
       using (var smtp = new SmtpClient())
       {
+        smtp.CheckCertificateRevocation = false;
+        smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
         smtp.Connect(_appSettings.SmtpHost, _appSettings.SmtpPort, SecureSocketOptions.Auto);
         smtp.Authenticate(_appSettings.SmtpUser, _appSettings.SmtpPassword);
         smtp.Send(email);
