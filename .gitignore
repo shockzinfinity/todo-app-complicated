@@ -363,4 +363,6 @@ FodyWeavers.xsd
 
 fullchain.pem
 privkey.pem
+chain.pem
+cert.pem
 appsettings.json
