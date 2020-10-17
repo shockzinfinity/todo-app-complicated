@@ -48,3 +48,6 @@ WHERE [FlowId] = 9
 
 -- DELETE FROM [dbo].[TodoItems] WHERE [Id] IN (24, 25, 26)
 -- DELETE FROM [dbo].[Flows] WHERE [Id] IN (16, 17, 18, 19)
+
+SELECT * FROM [dbo].[Accounts]
+SELECT * FROM [dbo].[RefreshToken]
