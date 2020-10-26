@@ -35,5 +35,11 @@ namespace todoCore3.Api.Controllers
     {
       return await _context.KtePartners.Select(x => ItemToDTO(x)).ToListAsync();
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<KtePartnerResponse>> GetBy(int id)
+    {
+      return await _context.KtePartners.Where(x => x.WPUserId == id).Select(x => ItemToDTO(x)).FirstOrDefaultAsync();
+    }
   }
 }
