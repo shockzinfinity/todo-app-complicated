@@ -15,7 +15,7 @@ using todoCore3.Api.Models.kte;
 namespace todoCore3.Api.Controllers
 {
 
-  [Route("api")]
+  [Route("api/[controller]")]
   [ApiController]
   [Produces("application/json")]
   public class wcOrderController : ControllerBase
