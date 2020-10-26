@@ -64,3 +64,25 @@ SELECT
 , [RevokedAt]
 , [ReplacedByToken]
 FROM [dbo].[RefreshToken]
+
+-- DELETE FROM [dbo].[Accounts] WHERE [Id] = 12
+
+
+
+SELECT
+[WPUserId]
+, [UserLogin]
+, [UserNickName]
+, [UserEmail]
+, [PartnerName]
+FROM [dbo].[KtePartners]
+
+-- INSERT INTO [dbo].[KtePartners] ([WPUserId], [UserLogin],[UserNickName],[UserEmail],[PartnerName],[CreatedAt],[UpdatedAt])
+-- SELECT TOP (1000) [ID]
+--       ,[user_login]
+--       ,[user_nicename]
+--       ,[user_email]
+--       ,[meta_value]
+--       , GETDATE()
+--       , GETDATE()
+--   FROM [todos].[dbo].[kteTest]
