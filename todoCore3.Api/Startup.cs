@@ -31,7 +31,12 @@ namespace todoCore3.Api
       //services.AddDbContext<TodoContext>(opt => opt.UseSqlServer("Data Source=sql;Database=todos;Integrated Security=false;User ID=sa;Password=p@ssw0rd"));
       services.AddDbContext<TodoContext>();
       services.AddCors();
-      services.AddControllers().AddNewtonsoftJson().AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
+      //services.AddControllers().AddNewtonsoftJson().AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
+      services.AddControllers().AddNewtonsoftJson(options =>
+      {
+        options.SerializerSettings.ContractResolver = new NullToEmptyStringResolver();
+        options.UseCamelCasing(true);
+      });
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
       services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
       services.AddScoped<IAccountService, AccountService>();
