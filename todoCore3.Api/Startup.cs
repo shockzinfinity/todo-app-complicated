@@ -32,7 +32,11 @@ namespace todoCore3.Api
       services.AddDbContext<TodoContext>();
       services.AddCors();
       //services.AddControllers().AddNewtonsoftJson().AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
-      services.AddControllers().AddNewtonsoftJson(options =>
+      services.AddControllers(options =>
+      {
+        options.AllowEmptyInputInBodyModelBinding = true;
+      })
+        .AddNewtonsoftJson(options =>
       {
         options.SerializerSettings.ContractResolver = new NullToEmptyStringResolver();
         options.UseCamelCasing(true);

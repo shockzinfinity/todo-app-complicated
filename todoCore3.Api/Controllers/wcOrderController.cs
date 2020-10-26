@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -27,9 +28,8 @@ namespace todoCore3.Api.Controllers
       _appSettings = appSettings.Value;
     }
 
-    [HttpGet]
-    [Route("orders")]
-    public async Task<IActionResult> GetOrders([FromBody] OrderParam orderParam)
+    [HttpGet("orders")]
+    public async Task<IActionResult> GetOrders([FromQuery] DateTime? before, [FromQuery] DateTime? after, [FromQuery] int partnerId = 0, [FromQuery] int currency = 1)
     {
       RestClient client = new RestClient(_appSettings.wcBaseApiUrl + "orders/");
 
@@ -38,11 +38,13 @@ namespace todoCore3.Api.Controllers
       RestRequest restRequest = new RestRequest();
       restRequest.Method = Method.GET;
 
-      restRequest.AddHeader("before", orderParam.before.HasValue ?
-          orderParam.before.Value.ToString("s") + "Z" : DateTime.Now.ToString("s") + "Z");
+      //restRequest.AddHeader("before", orderParam.before.HasValue ?
+      //    orderParam.before.Value.ToString("s") + "Z" : DateTime.Now.ToString("s") + "Z");
+      restRequest.AddHeader("before", before.HasValue ? before.Value.ToString("s") + "Z" : DateTime.Now.ToString("s") + "Z");
 
-      restRequest.AddHeader("after", orderParam.after.HasValue ?
-          orderParam.after.Value.ToString("s") + "Z" : DateTime.Now.AddDays(-30).ToString("s") + "Z");
+      //restRequest.AddHeader("after", orderParam.after.HasValue ?
+      //    orderParam.after.Value.ToString("s") + "Z" : DateTime.Now.AddDays(-30).ToString("s") + "Z");
+      restRequest.AddHeader("before", after.HasValue ? after.Value.ToString("s") + "Z" : DateTime.Now.ToString("s") + "Z");
 
       IRestResponse restResponse = await client.ExecuteAsync(restRequest);
 
@@ -51,15 +53,15 @@ namespace todoCore3.Api.Controllers
 
       foreach (JObject item in arrayTemp)
       {
-        returnResponses.Add(ConvertOrder(item, orderParam.currency));
+        //returnResponses.Add(ConvertOrder(item, orderParam.currency));
+        returnResponses.Add(ConvertOrder(item, currency));
       }
 
       return Ok(returnResponses);
     }
 
-    [HttpGet]
-    [Route("orders/{oid}")]
-    public async Task<IActionResult> GetOrderBy(int oid, [FromBody] OrderParam orderParam)
+    [HttpGet("orders/{oid}")]
+    public async Task<IActionResult> GetOrderBy(int oid, [FromQuery] int currency = 1)
     {
       RestClient client = new RestClient(_appSettings.wcBaseApiUrl + "orders/");
 
@@ -70,7 +72,7 @@ namespace todoCore3.Api.Controllers
       IRestResponse restResponse = await client.ExecuteAsync(restRequest);
       JObject jObject = JObject.Parse(restResponse.Content);
 
-      var response = ConvertOrder(jObject, orderParam.currency);
+      var response = ConvertOrder(jObject, currency);
 
       return Ok(response);
     }
