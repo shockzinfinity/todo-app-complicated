@@ -29,7 +29,16 @@ namespace todoCore3.Api.Controllers
     }
 
     [HttpGet("orders")]
-    public async Task<IActionResult> GetOrders([FromQuery] DateTime? before, [FromQuery] DateTime? after, [FromQuery] int partnerId = 0, [FromQuery] int currency = 1)
+    public async Task<IActionResult> GetOrders(
+      [FromQuery] DateTime? before,
+      [FromQuery] DateTime? after,
+      [FromQuery] IList<string> paymentMethods,
+      [FromQuery] DateTime? bookingDate,
+      [FromQuery] DateTime? returnDate,
+      [FromQuery] int productCode = 0,
+      [FromQuery] int partnerId = 0,
+      [FromQuery] int currency = 1,
+      [FromQuery] int orderNumber = 0)
     {
       RestClient client = new RestClient(_appSettings.wcBaseApiUrl + "orders/");
 
@@ -37,13 +46,7 @@ namespace todoCore3.Api.Controllers
 
       RestRequest restRequest = new RestRequest();
       restRequest.Method = Method.GET;
-
-      //restRequest.AddHeader("before", orderParam.before.HasValue ?
-      //    orderParam.before.Value.ToString("s") + "Z" : DateTime.Now.ToString("s") + "Z");
       restRequest.AddHeader("before", before.HasValue ? before.Value.ToString("s") + "Z" : DateTime.Now.ToString("s") + "Z");
-
-      //restRequest.AddHeader("after", orderParam.after.HasValue ?
-      //    orderParam.after.Value.ToString("s") + "Z" : DateTime.Now.AddDays(-30).ToString("s") + "Z");
       restRequest.AddHeader("before", after.HasValue ? after.Value.ToString("s") + "Z" : DateTime.Now.ToString("s") + "Z");
 
       IRestResponse restResponse = await client.ExecuteAsync(restRequest);
@@ -53,9 +56,10 @@ namespace todoCore3.Api.Controllers
 
       foreach (JObject item in arrayTemp)
       {
-        //returnResponses.Add(ConvertOrder(item, orderParam.currency));
         returnResponses.Add(ConvertOrder(item, currency));
       }
+
+      // query 부분
 
       return Ok(returnResponses);
     }
