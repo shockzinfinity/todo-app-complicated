@@ -203,8 +203,6 @@ namespace todoCore3.Api.Controllers
           var attrs = jObject["line_items"][0]["meta_data"].Where(k => k["key"].ToString().StartsWith("attribute_")).ToList();
           foreach (var item in attrs)
           {
-            orderResponse.OrderOptions += "<b>";
-
             switch (item["key"].ToString())
             {
               case "attribute_calendar_Date_Date_from":
@@ -235,9 +233,9 @@ namespace todoCore3.Api.Controllers
                 orderResponse.OrderOptions += item["key"].ToString();
                 break;
             }
-            orderResponse.OrderOptions += "</b> : ";
+            orderResponse.OrderOptions += " :::: ";
             orderResponse.OrderOptions += item["value"].ToString();
-            orderResponse.OrderOptions += "<br/>||";
+            orderResponse.OrderOptions += "||";
           }
 
           orderResponse.Status = itemMetas.Where(k => (string)k["key"] == "_kte_item_label_text").FirstOrDefault()?["value"].ToString();
